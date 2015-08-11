@@ -1,10 +1,5 @@
 #pragma once
-
-
-#include "maya\MArgList.h"
-#include "maya\MGlobal.h"
-#include "maya\MPxCommand.h"
-
+#include "stdafx.h"
 
 class MayaPlugin : public MPxCommand {
 public:
