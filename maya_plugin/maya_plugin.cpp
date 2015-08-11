@@ -2,26 +2,41 @@
 //
 #include "stdafx.h"
 #include "maya_plugin.h"
-#include "maya\MFnPlugin.h"
-#include "maya\MObject.h"
 
-void* MayaPlugin::creator() { return new MayaPlugin; }
 
-MStatus MayaPlugin::doIt(const MArgList& argList) {
-	MGlobal::displayInfo("Hello World!");
+MStatus MayaPlugin::doIt(const MArgList& args) {
+	auto set_list = MSelectionList();
+	auto code = MGlobal::getActiveSelectionList(set_list);
+	int set_list_length = set_list.length();
+
+	int num_vertices = 0;
+
+	for (int i = 0; i < set_list_length; ++i) {
+		auto d = MDagPath();
+		set_list.getDagPath(i, d);
+		d.extendToShape();
+		MFnMesh mesh(d.node());
+		num_vertices += mesh.numVertices(); 
+	}
+
+	auto vert = std::to_string(num_vertices);
+	const MString myString = vert.c_str();
+	MGlobal::displayInfo(myString);
+
 	return MS::kSuccess;
 }
 
-MStatus initializePlugin(MObject obj) {
-	MFnPlugin plugin(obj, "Chad Vernon", "1.0", "Any");
-	MStatus status = plugin.registerCommand("retrieve", MayaPlugin::creator);
-	CHECK_MSTATUS_AND_RETURN_IT(status);
-	return status;
+/////////////essential part////////////////
+void* MayaPlugin::creator() {
+	return new MayaPlugin;
 }
-
+MStatus initializePlugin(MObject obj) {
+	MFnPlugin plugin(obj, "Autodesk", "1.0", "Any");
+	plugin.registerCommand("hello", MayaPlugin::creator);
+	return MS::kSuccess;
+}
 MStatus uninitializePlugin(MObject obj) {
 	MFnPlugin plugin(obj);
-	MStatus status = plugin.deregisterCommand("helloWorld");
-	CHECK_MSTATUS_AND_RETURN_IT(status);
-	return status;
+	plugin.deregisterCommand("hello");
+	return MS::kSuccess;
 }
