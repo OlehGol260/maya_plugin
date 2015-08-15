@@ -5,11 +5,13 @@
 
 #pragma once
 
-#include "stdio.h"
+#include <stdio.h>
 #include <string>
 #include <vector>
-
-
+#include <iostream>
+#include <fstream>
+#include <array>
+#include <sstream>
 ////////MAYA INCLUDES/////////
 #include "maya/MString.h"
 #include "maya/MArgList.h"
@@ -21,6 +23,10 @@
 #include "maya/MFnMesh.h"
 #include "maya/MSelectionList.h"
 #include "maya/MDagPath.h"
+#include "maya/MFloatPointArray.h"
+#include "maya/MFloatVectorArray.h"
+#include "maya/MFloatPoint.h"
+#include "maya/MFloatVector.h"
 ///////END MAYA INCLUDES//////
 
 #include "targetver.h"
