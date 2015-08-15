@@ -12,6 +12,7 @@
 #include <fstream>
 #include <array>
 #include <sstream>
+
 ////////MAYA INCLUDES/////////
 #include "maya/MString.h"
 #include "maya/MArgList.h"
@@ -28,13 +29,3 @@
 #include "maya/MFloatPoint.h"
 #include "maya/MFloatVector.h"
 ///////END MAYA INCLUDES//////
-
-#include "targetver.h"
-
-//#define WIN32_LEAN_AND_MEAN             // Exclude rarely-used stuff from Windows headers
-// Windows Header Files:
-//#include <windows.h>
-
-
-
-// TODO: reference additional headers your program requires here

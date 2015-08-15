@@ -1,21 +1,22 @@
-// maya_plugin.cpp : Defines the exported functions for the DLL application.
-//
 #include "stdafx.h"
 #include "maya_plugin.h"
 #include "common.h"
 
-MStatus MayaPlugin::doIt(const MArgList&) {
+MStatus MayaPlugin::doIt(const MArgList& args) {
 	auto set_list = MSelectionList();
 	auto code = MGlobal::getActiveSelectionList(set_list);
 	int set_list_length = set_list.length();
 	auto num_vertices = 0;
-	std::string filename = "E:\myfile.txt";
-	std::ofstream myFile(filename);
+
+	std::string filepath = args.asString(0).asChar();
+	std::ofstream myFile(filepath);
 
 	if (!myFile.is_open())
 	{
+		MGlobal::displayError((std::string("invalid filepath specified: ") + filepath).c_str());
 		return MS::kFailure;
 	}
+
 	myFile << "-------------------BEGINING-----------------\n";
 	for (auto i = 0; i < set_list_length; ++i) {
 		auto d = MDagPath();
@@ -26,7 +27,7 @@ MStatus MayaPlugin::doIt(const MArgList&) {
 		storeVerticesToFile(mesh, myFile);
 		storeNormalsToFile(mesh, myFile);
 
-		int numbOfVertices = mesh.numVertices();
+		auto numbOfVertices = mesh.numVertices();
 		num_vertices += numbOfVertices; 
 	}
 	myFile << "-------------------THE END-----------------\n";
@@ -56,18 +57,8 @@ void MayaPlugin::storeNormalsToFile(const MFnMesh & mesh, std::ofstream & file)
 	writeArrayToFile<MFloatVectorArray>(file, normals);
 }
 
-/////////////essential part////////////////
 void* MayaPlugin::creator() {
 	return new MayaPlugin;
 }
 
-MStatus initializePlugin(MObject obj) {
-	MFnPlugin plugin(obj, "Autodesk", "1.0", "Any");
-	plugin.registerCommand("countAndSave", MayaPlugin::creator);
-	return MS::kSuccess;
-}
-MStatus uninitializePlugin(MObject obj) {
-	MFnPlugin plugin(obj);
-	plugin.deregisterCommand("countAndSave");
-	return MS::kSuccess;
-}
+
