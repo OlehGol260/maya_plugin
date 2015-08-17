@@ -28,4 +28,10 @@
 #include "maya/MFloatVectorArray.h"
 #include "maya/MFloatPoint.h"
 #include "maya/MFloatVector.h"
+#include "maya/MColor.h"
+#include "maya/MPlugArray.h"
+#include "maya/MItDependencyNodes.h"
+#include "maya/MFnLambertShader.h"
+#include "maya/MFnBlinnShader.h"
+#include "maya/MFnPhongShader.h"
 ///////END MAYA INCLUDES//////

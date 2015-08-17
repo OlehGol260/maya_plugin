@@ -27,7 +27,7 @@
     <ClInclude Include="common.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="modelExporter.h">
+    <ClInclude Include="materialExporter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -41,7 +41,7 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="modelExporter.cpp">
+    <ClCompile Include="materialExporter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -3,37 +3,42 @@
 #include "common.h"
 
 MStatus MayaPlugin::doIt(const MArgList& args) {
-	auto set_list = MSelectionList();
-	auto code = MGlobal::getActiveSelectionList(set_list);
-	int set_list_length = set_list.length();
-	auto num_vertices = 0;
+	auto activeList = MSelectionList();
+	MGlobal::getActiveSelectionList(activeList);
+	int activeListLength = activeList.length();
+	auto activeListVerticesNum = 0;
 
 	std::string filepath = args.asString(0).asChar();
 	std::ofstream myFile(filepath);
 
 	if (!myFile.is_open())
 	{
-		MGlobal::displayError((std::string("invalid filepath specified: ") + filepath).c_str());
+		auto errmsg = "invalid filepath specified: " + filepath;
+		MGlobal::displayError(errmsg.c_str());
 		return MS::kFailure;
 	}
 
 	myFile << "-------------------BEGINING-----------------\n";
-	for (auto i = 0; i < set_list_length; ++i) {
+	for (auto i = 0; i < activeListLength; ++i) {
 		auto d = MDagPath();
-		set_list.getDagPath(i, d);
-		d.extendToShape();
+		activeList.getDagPath(i, d);
+		//d.extendToShape();
 		MFnMesh mesh(d.node());
+		MColor color;
+		mesh.getColor(0, color);
+		std::stringstream str;
+		str << "r = " << color.r << " g= " << color.g << " b= " << color.b;
+		MGlobal::displayInfo(str.str().c_str());
 
 		storeVerticesToFile(mesh, myFile);
 		storeNormalsToFile(mesh, myFile);
 
-		auto numbOfVertices = mesh.numVertices();
-		num_vertices += numbOfVertices; 
+		activeListVerticesNum += mesh.numVertices();
 	}
 	myFile << "-------------------THE END-----------------\n";
-	auto vert = std::to_string(num_vertices);
-	const MString myString = vert.c_str();
-	MGlobal::displayInfo(myString);
+	auto vert = std::to_string(activeListVerticesNum);
+	//auto vert = std::to_string(activeListLength);
+	MGlobal::displayInfo(vert.c_str());
 
 	myFile.close();
 	return MS::kSuccess;
@@ -41,8 +46,7 @@ MStatus MayaPlugin::doIt(const MArgList& args) {
 
 void MayaPlugin::storeVerticesToFile(const MFnMesh & mesh, std::ofstream & file)
 {
-	file << mesh.fullPathName();
-	file << " vertices\n";
+	file << mesh.fullPathName() << " vertices\n";
 	MFloatPointArray vertices;
 	mesh.getPoints(vertices);
 	writeArrayToFile<MFloatPointArray>(file, vertices);
@@ -50,8 +54,7 @@ void MayaPlugin::storeVerticesToFile(const MFnMesh & mesh, std::ofstream & file)
 
 void MayaPlugin::storeNormalsToFile(const MFnMesh & mesh, std::ofstream & file)
 {
-	file << mesh.fullPathName();
-	file << " normals\n";
+	file << mesh.fullPathName() << " normals\n";
 	MFloatVectorArray normals;
 	mesh.getNormals(normals);
 	writeArrayToFile<MFloatVectorArray>(file, normals);
